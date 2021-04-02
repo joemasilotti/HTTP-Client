@@ -1,0 +1,6 @@
+import Foundation
+
+public struct Response<T> {
+    public let headers: [AnyHashable: Any]
+    public let value: T
+}
