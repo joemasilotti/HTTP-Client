@@ -3,7 +3,7 @@ import HTTP
 
 let url = URL.test
 
-struct GETRequest {
+struct GETRequestExample {
     func example() {
         let client = Client()
         let request = Request(url: url)
@@ -14,24 +14,9 @@ struct GETRequest {
             }
         }
     }
-    
-    func exampleWithHeaders() {
-        let client = Client()
-        let headers = ["Cookie": "tasty_cookie=strawberry"]
-        let request = Request(url: url, headers: headers)
-        client.request(request, success: Empty.self, error: Empty.self) { _ in }
-    }
-    
-    func exampleWithURLRequest() {
-        let client = Client()
-        let request = URLRequest(url: url,
-                                 cachePolicy: .reloadIgnoringLocalCacheData,
-                                 timeoutInterval: 42.0)
-        client.request(request, success: Empty.self, error: Empty.self) { _ in }
-    }
 }
 
-struct POSTRequest {
+struct POSTRequestExample {
     func example() {
         struct Registration: Codable {
             let email: String
@@ -62,5 +47,26 @@ struct POSTRequest {
                 print("Error", error.localizedDescription)
             }
         }
+    }
+}
+
+struct RequestWithHeadersExample {
+    func example() {
+        let client = Client()
+        let headers = ["Cookie": "tasty_cookie=strawberry"]
+        let request = Request(url: url, headers: headers)
+        client.request(request, success: Empty.self, error: Empty.self) { _ in }
+    }
+}
+
+struct URLRequestExample {
+    func example() {
+        let client = Client()
+        let request = URLRequest(
+            url: url,
+            cachePolicy: .reloadIgnoringLocalCacheData,
+            timeoutInterval: 42.0
+        )
+        client.request(request, success: Empty.self, error: Empty.self) { _ in }
     }
 }

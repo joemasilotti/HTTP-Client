@@ -13,8 +13,8 @@ public struct Client {
         self.request(request.asURLRequest, success: success, error: error, completion: completion)
     }
 
-    public func request<T, E>(_ urlRequest: URLRequest, success: T.Type, error: E.Type, completion: @escaping Completion<T, E>) {
-        requestLoader.load(urlRequest) { data, response, error in
+    public func request<T, E>(_ request: URLRequest, success: T.Type, error: E.Type, completion: @escaping Completion<T, E>) {
+        requestLoader.load(request) { data, response, error in
             if let error = error {
                 completion(.failure(.failedRequest(error)))
             } else if let response = response as? HTTPURLResponse {

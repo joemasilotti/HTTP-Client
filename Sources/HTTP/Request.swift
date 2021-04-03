@@ -1,9 +1,9 @@
 import Foundation
 
 public class Request {
-    public typealias HTTPHeaderFields = [String : String]
-    
-    public init(url: URL, method: Method = .get, headers: HTTPHeaderFields = [:]) {
+    public typealias Headers = [String: String]
+
+    public init(url: URL, method: Method = .get, headers: Headers = [:]) {
         self.url = url
         self.method = method
         self.headers = headers
@@ -23,7 +23,7 @@ public class Request {
 
     // MARK: Private
 
+    private let headers: Headers
     private let method: Method
     private let url: URL
-    private let headers: HTTPHeaderFields
 }

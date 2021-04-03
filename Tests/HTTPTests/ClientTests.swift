@@ -22,7 +22,7 @@ final class ClientTests: XCTestCase {
 
         XCTAssertEqual(requestLoader.lastLoadedRequest, expectedURLRequest)
     }
-    
+
     func test_request_failsWithANetworkError() {
         let requestLoader = FakeRequestLoader()
         let client = Client(requestLoader: requestLoader)
