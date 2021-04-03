@@ -13,6 +13,16 @@ final class ClientTests: XCTestCase {
         XCTAssertEqual(requestLoader.lastLoadedRequest, URLRequest.test)
     }
 
+    func test_request_withURLRequest_loadsTheRequest() {
+        let requestLoader = FakeRequestLoader()
+        let client = Client(requestLoader: requestLoader)
+
+        let expectedURLRequest = URLRequest.testWithExtraProperties
+        client.request(expectedURLRequest, success: Empty.self, error: Empty.self) { _ in }
+
+        XCTAssertEqual(requestLoader.lastLoadedRequest, expectedURLRequest)
+    }
+    
     func test_request_failsWithANetworkError() {
         let requestLoader = FakeRequestLoader()
         let client = Client(requestLoader: requestLoader)
