@@ -1,6 +1,6 @@
 import Foundation
 
-public extension HTTP {
+public extension Client {
     enum Error<T: LocalizedError>: LocalizedError {
         case failedRequest(URLError?)
         case invalidResponse
@@ -17,4 +17,4 @@ public extension HTTP {
     }
 }
 
-extension HTTP.Error: Equatable where T: Equatable {}
+extension Client.Error: Equatable where T: Equatable {}
