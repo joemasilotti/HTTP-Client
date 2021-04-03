@@ -10,7 +10,11 @@ public struct Client {
     }
 
     public func request<T, E>(_ request: Request, success: T.Type, error: E.Type, completion: @escaping Completion<T, E>) {
-        requestLoader.load(request.asURLRequest) { data, response, error in
+        self.request(request.asURLRequest, success: success, error: error, completion: completion)
+    }
+
+    public func request<T, E>(_ request: URLRequest, success: T.Type, error: E.Type, completion: @escaping Completion<T, E>) {
+        requestLoader.load(request) { data, response, error in
             if let error = error {
                 completion(.failure(.failedRequest(error)))
             } else if let response = response as? HTTPURLResponse {

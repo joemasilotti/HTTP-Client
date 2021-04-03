@@ -62,3 +62,24 @@ client.request(request, success: User.self, error: RegistrationError.self) { res
     }
 }
 ```
+
+HTTP headers can also be set on `Request`.
+
+```swift
+let client = Client()
+let headers = ["Cookie": "tasty_cookie=strawberry"]
+let request = Request(url: url, headers: headers)
+client.request(request, success: Empty.self, error: Empty.self) { _ in }
+```
+
+`URLRequest` can be used directly if you require more fine grained control.
+
+```swift
+let client = Client()
+let request = URLRequest(
+    url: url,
+    cachePolicy: .reloadIgnoringLocalCacheData,
+    timeoutInterval: 42.0
+)
+client.request(request, success: Empty.self, error: Empty.self) { _ in }
+```

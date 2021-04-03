@@ -16,4 +16,10 @@ class RequestTests: XCTestCase {
         let postRequest = Request(url: URL.test, method: .post)
         XCTAssertEqual(postRequest.asURLRequest.httpMethod, "POST")
     }
+
+    func test_asURLRequest_setsAllHTTPHeaderFields() {
+        let headers = ["Cookie": "yummy_cookie=choco; tasty_cookie=strawberry;"]
+        let requestWithHeaders = Request(url: URL.test, headers: headers)
+        XCTAssertEqual(requestWithHeaders.asURLRequest.allHTTPHeaderFields, headers)
+    }
 }

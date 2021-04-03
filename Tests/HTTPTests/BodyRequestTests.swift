@@ -18,4 +18,16 @@ class BodyRequestTests: XCTestCase {
         let urlRequest = request.asURLRequest
         XCTAssertEqual(urlRequest.value(forHTTPHeaderField: "Content-Type"), "application/json")
     }
+
+    func test_init_setsTheAllHTTPHeaderFields() {
+        let request = BodyRequest(
+            url: URL.test,
+            body: TestObject(),
+            headers: ["Cookie": "yummy_cookie=choco;"]
+        )
+
+        let urlRequest = request.asURLRequest
+        XCTAssertEqual(urlRequest.value(forHTTPHeaderField: "Cookie"), "yummy_cookie=choco;")
+        XCTAssertEqual(urlRequest.value(forHTTPHeaderField: "Content-Type"), "application/json")
+    }
 }
