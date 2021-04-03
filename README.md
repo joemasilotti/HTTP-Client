@@ -62,3 +62,22 @@ client.request(request, success: User.self, error: RegistrationError.self) { res
     }
 }
 ```
+
+GET request with HTTP headers.
+
+```swift
+let client = Client()
+let headers = ["Cookie": "tasty_cookie=strawberry"]
+let request = Request(url: url, headers: headers)
+client.request(request, success: Empty.self, error: Empty.self) { _ in }
+```
+
+You can also use an URLRequest object with the Client if you require more fine grained control.
+
+```swift
+let client = Client()
+let request = URLRequest(url: url,
+                         cachePolicy: .reloadIgnoringLocalCacheData,
+                         timeoutInterval: 42.0)
+client.request(request, success: Empty.self, error: Empty.self) { _ in }
+```
