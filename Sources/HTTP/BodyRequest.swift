@@ -1,9 +1,10 @@
 import Foundation
 
 public class BodyRequest<T: Encodable>: Request {
-    public init(url: URL, method: Method = .get, body: T) {
+    public init(url: URL, method: Method = .get, body: T,
+                headers: HTTPHeaderFields = [:]) {
         self.body = body
-        super.init(url: url, method: method)
+        super.init(url: url, method: method, headers: headers)
     }
 
     // MARK: Internal
