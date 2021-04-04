@@ -17,9 +17,9 @@ GET request with no expected success or error response object types.
 ```swift
 import HTTP
 
-let client = Client()
+let client = Client<Empty, Empty>()
 let request = Request(url: url)
-client.request(request, success: Empty.self, error: Empty.self) { result in
+client.request(request) { result in
     switch result {
     case .success: print("Success!")
     case .failure(let error): print(error.localizedDescription)
@@ -49,10 +49,10 @@ struct RegistrationError: LocalizedError, Codable, Equatable {
     var errorDescription: String? { message }
 }
 
-let client = Client()
+let client = Client<User, RegistrationError>()
 let registration = Registration(email: "joe@masilotti.com", password: "password")
 let request = BodyRequest(url: url, method: .post, body: registration)
-client.request(request, success: User.self, error: RegistrationError.self) { result in
+client.request(request) { result in
     switch result {
     case .success(let response):
         print("HTTP headers", response.headers)
@@ -66,20 +66,24 @@ client.request(request, success: User.self, error: RegistrationError.self) { res
 HTTP headers can also be set on `Request`.
 
 ```swift
-let client = Client()
+import HTTP
+
+let client = Client<Empty, Empty>()
 let headers = ["Cookie": "tasty_cookie=strawberry"]
 let request = Request(url: url, headers: headers)
-client.request(request, success: Empty.self, error: Empty.self) { _ in }
+client.request(request) { _ in }
 ```
 
 `URLRequest` can be used directly if you require more fine grained control.
 
 ```swift
-let client = Client()
+import HTTP
+
+let client = Client<Empty, Empty>()
 let request = URLRequest(
     url: url,
     cachePolicy: .reloadIgnoringLocalCacheData,
     timeoutInterval: 42.0
 )
-client.request(request, success: Empty.self, error: Empty.self) { _ in }
+client.request(request) { _ in }
 ```

@@ -1,19 +1,19 @@
 import Combine
 import Foundation
 
-public typealias Completion<T, E> = (Result<Response<T>, Client.Error<E>>) -> Void
+public typealias Completion<T, E> = (Result<Response<T>, Client<T, E>.Error<E>>) -> Void
     where T: Decodable, E: LocalizedError & Decodable & Equatable
 
-public struct Client {
+public struct Client<T, E> where T: Decodable, E: LocalizedError & Decodable & Equatable {
     public init(requestLoader: RequestLoader = URLSession.shared) {
         self.requestLoader = requestLoader
     }
 
-    public func request<T, E>(_ request: Request, success: T.Type, error: E.Type, completion: @escaping Completion<T, E>) {
-        self.request(request.asURLRequest, success: success, error: error, completion: completion)
+    public func request(_ request: Request, completion: @escaping Completion<T, E>) {
+        self.request(request.asURLRequest, completion: completion)
     }
 
-    public func request<T, E>(_ request: URLRequest, success: T.Type, error: E.Type, completion: @escaping Completion<T, E>) {
+    public func request(_ request: URLRequest, completion: @escaping Completion<T, E>) {
         requestLoader.load(request) { data, response, error in
             if let error = error {
                 completion(.failure(.failedRequest(error)))
