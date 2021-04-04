@@ -31,7 +31,7 @@ final class ClientTests: XCTestCase {
         requestLoader.nextError = networkError
 
         client.request(Request(url: URL.test)) { result in
-            assertResultError(result, Client.Error.failedRequest(URLError(.badURL)))
+            assertResultError(result, HTTPError.failedRequest(URLError(.badURL)))
         }
     }
 
@@ -60,7 +60,7 @@ final class ClientTests: XCTestCase {
         requestLoader.nextResponse = response
 
         client.request(Request(url: URL.test)) { result in
-            assertResultError(result, Client.Error.invalidResponse)
+            assertResultError(result, HTTPError.invalidResponse)
         }
     }
 
@@ -76,7 +76,7 @@ final class ClientTests: XCTestCase {
         requestLoader.nextResponse = response
 
         client.request(Request(url: URL.test)) { result in
-            assertResultError(result, Client.Error.invalidRequest(error))
+            assertResultError(result, HTTPError.invalidRequest(error))
         }
     }
 
@@ -88,7 +88,7 @@ final class ClientTests: XCTestCase {
         requestLoader.nextResponse = response
 
         client.request(Request(url: URL.test)) { result in
-            assertResultError(result, Client.Error.invalidRequest(nil))
+            assertResultError(result, HTTPError.invalidRequest(nil))
         }
     }
 
@@ -99,7 +99,7 @@ final class ClientTests: XCTestCase {
         requestLoader.nextResponse = URLResponse()
 
         client.request(Request(url: URL.test)) { result in
-            assertResultError(result, Client.Error.failedRequest(nil))
+            assertResultError(result, HTTPError.failedRequest(nil))
         }
     }
 }

@@ -1,7 +1,7 @@
 import Combine
 import Foundation
 
-public typealias Completion<T, E> = (Result<Response<T>, Client<T, E>.Error<E>>) -> Void
+public typealias Completion<T, E> = (Result<Response<T>, HTTPError<E>>) -> Void
     where T: Decodable, E: LocalizedError & Decodable & Equatable
 
 public struct Client<T, E> where T: Decodable, E: LocalizedError & Decodable & Equatable {
