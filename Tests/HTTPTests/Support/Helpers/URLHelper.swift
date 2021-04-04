@@ -6,7 +6,9 @@ extension URL {
 
 extension URLRequest {
     static var test = Self(url: URL.test)
-    static var testWithExtraProperties = Self(url: URL.test,
-                                              cachePolicy: .reloadIgnoringLocalAndRemoteCacheData,
-                                              timeoutInterval: 42.0)
+    static var testWithExtraProperties = Self(
+        url: URL.test,
+        cachePolicy: .reloadIgnoringLocalAndRemoteCacheData,
+        timeoutInterval: 42.0
+    )
 }
