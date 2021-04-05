@@ -5,7 +5,7 @@ public typealias Completion<T, E> = (Result<Response<T>, HTTPError<E>>) -> Void
     where T: Decodable, E: LocalizedError & Decodable & Equatable
 
 public struct Client<T, E> where T: Decodable, E: LocalizedError & Decodable & Equatable {
-    public init(requestLoader: RequestLoader = URLSession.shared) {
+    public init(requestLoader: RequestLoader = Global.requestLoader) {
         self.requestLoader = requestLoader
     }
 
