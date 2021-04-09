@@ -1,4 +1,3 @@
-import Combine
 import Foundation
 
 public typealias Completion<T, E> = (Result<Response<T>, HTTPError<E>>) -> Void
