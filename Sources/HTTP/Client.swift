@@ -32,7 +32,7 @@ public struct Client<T, E> where T: Decodable, E: LocalizedError & Decodable & E
         if (200 ..< 300).contains(response.statusCode) {
             handleSuccess(data, headers: response.allHeaderFields, completion: completion)
         } else {
-            handleFailure(data, completion: completion)
+            handleFailure(data, statusCode: response.statusCode, completion: completion)
         }
     }
 
@@ -44,11 +44,11 @@ public struct Client<T, E> where T: Decodable, E: LocalizedError & Decodable & E
         }
     }
 
-    private func handleFailure<T, E>(_ data: Data?, completion: @escaping Completion<T, E>) {
+    private func handleFailure<T, E>(_ data: Data?, statusCode: Int, completion: @escaping Completion<T, E>) {
         if let error: E = parse(data) {
             completion(.failure(.invalidRequest(error)))
         } else {
-            completion(.failure(.invalidResponse))
+            completion(.failure(.invalidResponse(statusCode)))
         }
     }
 
