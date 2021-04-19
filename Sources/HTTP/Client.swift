@@ -40,7 +40,7 @@ public struct Client<T, E> where T: Decodable, E: LocalizedError & Decodable & E
         if let object: T = parse(data) {
             completion(.success(Response(headers: headers, value: object)))
         } else {
-            completion(.failure(.invalidResponse))
+            completion(.failure(.responseTypeMismatch))
         }
     }
 
@@ -48,7 +48,7 @@ public struct Client<T, E> where T: Decodable, E: LocalizedError & Decodable & E
         if let error: E = parse(data) {
             completion(.failure(.invalidRequest(error)))
         } else {
-            completion(.failure(.invalidRequest(nil)))
+            completion(.failure(.invalidResponse))
         }
     }
 

@@ -60,7 +60,7 @@ final class ClientTests: XCTestCase {
         requestLoader.nextResponse = response
 
         client.request(Request(url: URL.test)) { result in
-            assertResultError(result, HTTPError.invalidResponse)
+            assertResultError(result, HTTPError.responseTypeMismatch)
         }
     }
 
@@ -88,7 +88,7 @@ final class ClientTests: XCTestCase {
         requestLoader.nextResponse = response
 
         client.request(Request(url: URL.test)) { result in
-            assertResultError(result, HTTPError.invalidRequest(nil))
+            assertResultError(result, HTTPError.invalidResponse)
         }
     }
 
