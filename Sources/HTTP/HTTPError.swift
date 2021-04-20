@@ -13,7 +13,7 @@ public enum HTTPError<T: LocalizedError>: LocalizedError {
             case let .invalidRequest(error):
                 return error.localizedDescription
             case let .invalidResponse(statusCode):
-                return "The response was invalid (\(statusCode)."
+                return "The response was invalid (\(statusCode))."
             case .responseTypeMismatch:
                 return "The response did not match the expected type."
         }
