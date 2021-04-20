@@ -30,4 +30,21 @@ class BodyRequestTests: XCTestCase {
         XCTAssertEqual(urlRequest.value(forHTTPHeaderField: "Cookie"), "yummy_cookie=choco;")
         XCTAssertEqual(urlRequest.value(forHTTPHeaderField: "Content-Type"), "application/json")
     }
+
+    func test_init_usesTheKeyEncodingStrategy() throws {
+        let request = BodyRequest(
+            url: URL.test,
+            body: LongNameObject(longProperty: "value"),
+            keyEncodingStrategy: .convertToSnakeCase
+        )
+
+        let urlRequest = request.asURLRequest
+        let data = try XCTUnwrap(urlRequest.httpBody)
+        let json = try XCTUnwrap(JSONSerialization.jsonObject(with: data, options: []) as? [String: String])
+        XCTAssertEqual(json["long_property"], "value")
+    }
+}
+
+private struct LongNameObject: Encodable {
+    let longProperty: String
 }
