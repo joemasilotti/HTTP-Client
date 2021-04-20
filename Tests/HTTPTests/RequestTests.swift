@@ -15,6 +15,9 @@ class RequestTests: XCTestCase {
 
         let postRequest = Request(url: URL.test, method: .post)
         XCTAssertEqual(postRequest.asURLRequest.httpMethod, "POST")
+
+        let deleteRequest = Request(url: URL.test, method: .delete)
+        XCTAssertEqual(deleteRequest.asURLRequest.httpMethod, "DELETE")
     }
 
     func test_asURLRequest_setsAllHTTPHeaderFields() {
