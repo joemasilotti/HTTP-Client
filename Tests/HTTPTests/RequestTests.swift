@@ -10,14 +10,17 @@ class RequestTests: XCTestCase {
     }
 
     func test_asURLRequest_setsTheHTTPMethod() {
+        let deleteRequest = Request(url: URL.test, method: .delete)
+        XCTAssertEqual(deleteRequest.asURLRequest.httpMethod, "DELETE")
+
         let getRequest = Request(url: URL.test)
         XCTAssertEqual(getRequest.asURLRequest.httpMethod, "GET")
 
+        let patchRequest = Request(url: URL.test, method: .patch)
+        XCTAssertEqual(patchRequest.asURLRequest.httpMethod, "PATCH")
+
         let postRequest = Request(url: URL.test, method: .post)
         XCTAssertEqual(postRequest.asURLRequest.httpMethod, "POST")
-
-        let deleteRequest = Request(url: URL.test, method: .delete)
-        XCTAssertEqual(deleteRequest.asURLRequest.httpMethod, "DELETE")
     }
 
     func test_asURLRequest_setsAllHTTPHeaderFields() {
