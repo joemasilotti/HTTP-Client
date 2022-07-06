@@ -12,4 +12,12 @@ class FakeRequestLoader: RequestLoader {
         lastLoadedRequest = request
         completion(nextData, nextResponse, nextError)
     }
+
+    func load(_ request: URLRequest) async throws -> (Data, URLResponse) {
+        lastLoadedRequest = request
+        if let error = nextError {
+            throw error
+        }
+        return (nextData ?? Data(), nextResponse ?? HTTPURLResponse())
+    }
 }

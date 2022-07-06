@@ -1,6 +1,6 @@
 # HTTP Client
 
-A barebones Swift HTTP client with automatic JSON response parsing.
+A barebones async-await Swift HTTP client with automatic JSON response parsing.
 
 ## Installation
 
@@ -19,18 +19,17 @@ import HTTP
 
 let client = Client<Empty, Empty>()
 let request = Request(url: url)
-client.request(request) { result in
-    switch result {
-    case .success: print("Success!")
-    case .failure(let error): print(error.localizedDescription)
-    }
+switch await client.request(request) {
+case .success: print("Success!")
+case .failure(let error): print(error.localizedDescription)
 }
 ```
 
-POST request with both HTTP body and expected success and response object types.
+POST request with HTTP body and expected success and failure response objects. Failure response objects are parsed with response codes outside the 200 range.
 
 ```swift
 import HTTP
+
 
 struct Registration: Codable {
     let email: String
@@ -52,14 +51,12 @@ struct RegistrationError: LocalizedError, Codable, Equatable {
 let client = Client<User, RegistrationError>()
 let registration = Registration(email: "joe@masilotti.com", password: "password")
 let request = BodyRequest(url: url, method: .post, body: registration)
-client.request(request) { result in
-    switch result {
-    case .success(let response):
-        print("HTTP headers", response.headers)
-        print("User", response.value)
-    case .failure(let error):
-        print("Error", error.localizedDescription)
-    }
+switch await client.request(request) {
+case .success(let response):
+    print("HTTP headers", response.headers)
+    print("User", response.value)
+case .failure(let error):
+    print("Error", error.localizedDescription)
 }
 ```
 
@@ -71,7 +68,7 @@ import HTTP
 let client = Client<Empty, Empty>()
 let headers = ["Cookie": "tasty_cookie=strawberry"]
 let request = Request(url: url, headers: headers)
-client.request(request) { _ in }
+_ = await client.request(request)
 ```
 
 `URLRequest` can be used directly if you require more fine grained control.
@@ -85,5 +82,5 @@ let request = URLRequest(
     cachePolicy: .reloadIgnoringLocalCacheData,
     timeoutInterval: 42.0
 )
-client.request(request) { _ in }
+_ = await client.request(request)
 ```

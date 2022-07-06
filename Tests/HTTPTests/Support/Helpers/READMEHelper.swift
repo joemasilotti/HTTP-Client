@@ -4,20 +4,18 @@ import HTTP
 let url = URL.test
 
 struct GETRequestExample {
-    func example() {
+    func example() async {
         let client = Client<Empty, Empty>()
         let request = Request(url: url)
-        client.request(request) { result in
-            switch result {
-            case .success: print("Success!")
-            case .failure(let error): print(error.localizedDescription)
-            }
+        switch await client.request(request) {
+        case .success: print("Success!")
+        case .failure(let error): print(error.localizedDescription)
         }
     }
 }
 
 struct POSTRequestExample {
-    func example() {
+    func example() async {
         struct Registration: Codable {
             let email: String
             let password: String
@@ -38,35 +36,33 @@ struct POSTRequestExample {
         let client = Client<User, RegistrationError>()
         let registration = Registration(email: "joe@masilotti.com", password: "password")
         let request = BodyRequest(url: url, method: .post, body: registration)
-        client.request(request) { result in
-            switch result {
-            case .success(let response):
-                print("HTTP headers", response.headers)
-                print("User", response.value)
-            case .failure(let error):
-                print("Error", error.localizedDescription)
-            }
+        switch await client.request(request) {
+        case .success(let response):
+            print("HTTP headers", response.headers)
+            print("User", response.value)
+        case .failure(let error):
+            print("Error", error.localizedDescription)
         }
     }
 }
 
 struct RequestWithHeadersExample {
-    func example() {
+    func example() async {
         let client = Client<Empty, Empty>()
         let headers = ["Cookie": "tasty_cookie=strawberry"]
         let request = Request(url: url, headers: headers)
-        client.request(request) { _ in }
+        _ = await client.request(request)
     }
 }
 
 struct URLRequestExample {
-    func example() {
+    func example() async {
         let client = Client<Empty, Empty>()
         let request = URLRequest(
             url: url,
             cachePolicy: .reloadIgnoringLocalCacheData,
             timeoutInterval: 42.0
         )
-        client.request(request) { _ in }
+        _ = await client.request(request)
     }
 }

@@ -1,6 +1,6 @@
 import Foundation
 
-public typealias Completion<T, E> = (Result<Response<T>, HTTPError<E>>) -> Void
+public typealias ClientResult<T, E> = Result<Response<T>, HTTPError<E>>
     where T: Decodable, E: LocalizedError & Decodable & Equatable
 
 public struct Client<T, E> where T: Decodable, E: LocalizedError & Decodable & Equatable {
@@ -8,19 +8,16 @@ public struct Client<T, E> where T: Decodable, E: LocalizedError & Decodable & E
         self.requestLoader = requestLoader
     }
 
-    public func request(_ request: Request, completion: @escaping Completion<T, E>) {
-        self.request(request.asURLRequest, completion: completion)
+    public func request(_ request: Request) async -> ClientResult<T, E> {
+        await self.request(request.asURLRequest)
     }
 
-    public func request(_ request: URLRequest, completion: @escaping Completion<T, E>) {
-        requestLoader.load(request) { data, response, error in
-            if let error = error {
-                completion(.failure(.failedRequest(error)))
-            } else if let response = response as? HTTPURLResponse {
-                handleResponse(response, with: data, completion: completion)
-            } else {
-                completion(.failure(.failedRequest(nil)))
-            }
+    public func request(_ request: URLRequest) async -> ClientResult<T, E> {
+        do {
+            let (data, response) = try await requestLoader.load(request)
+            return handleResponse(response, with: data)
+        } catch {
+            return .failure(.failedRequest(error as? URLError))
         }
     }
 
@@ -28,32 +25,32 @@ public struct Client<T, E> where T: Decodable, E: LocalizedError & Decodable & E
 
     private let requestLoader: RequestLoader
 
-    private func handleResponse<T, E>(_ response: HTTPURLResponse, with data: Data?, completion: @escaping Completion<T, E>) {
+    private func handleResponse<T>(_ response: URLResponse, with data: Data) -> ClientResult<T, E> {
+        guard let response = response as? HTTPURLResponse
+        else { return .failure(.failedRequest(nil)) }
+
         if (200 ..< 300).contains(response.statusCode) {
-            handleSuccess(data, headers: response.allHeaderFields, completion: completion)
+            return handleSuccess(data, headers: response.allHeaderFields)
         } else {
-            handleFailure(data, statusCode: response.statusCode, completion: completion)
+            return handleFailure(data, statusCode: response.statusCode)
         }
     }
 
-    private func handleSuccess<T, E>(_ data: Data?, headers: [AnyHashable: Any], completion: @escaping Completion<T, E>) {
-        if let object: T = parse(data) {
-            completion(.success(Response(headers: headers, value: object)))
-        } else {
-            completion(.failure(.responseTypeMismatch))
+    private func handleSuccess<T, E>(_ data: Data, headers: [AnyHashable: Any]) -> ClientResult<T, E> {
+        do {
+            let value = try JSONDecoder().decode(T.self, from: data)
+            return .success(Response(headers: headers, value: value))
+        } catch {
+            return .failure(.responseTypeMismatch)
         }
     }
 
-    private func handleFailure<T, E>(_ data: Data?, statusCode: Int, completion: @escaping Completion<T, E>) {
-        if let error: E = parse(data) {
-            completion(.failure(.invalidRequest(error)))
-        } else {
-            completion(.failure(.invalidResponse(statusCode)))
+    private func handleFailure<T, E>(_ data: Data, statusCode: Int) -> ClientResult<T, E> {
+        do {
+            let error = try JSONDecoder().decode(E.self, from: data)
+            return .failure(.invalidRequest(error))
+        } catch {
+            return .failure(.invalidResponse(statusCode))
         }
-    }
-
-    private func parse<T: Decodable>(_ data: Data?) -> T? {
-        guard let data = data else { return nil }
-        return try? JSONDecoder().decode(T.self, from: data)
     }
 }
