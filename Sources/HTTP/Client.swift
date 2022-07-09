@@ -46,7 +46,7 @@ public struct Client<T, E> where T: Decodable, E: LocalizedError & Decodable & E
 
     private func handleFailure<T, E>(_ data: Data?, statusCode: Int, completion: @escaping Completion<T, E>) {
         if let error: E = parse(data) {
-            completion(.failure(.invalidRequest(error)))
+            completion(.failure(.invalidRequest(error, statusCode)))
         } else {
             completion(.failure(.invalidResponse(statusCode)))
         }

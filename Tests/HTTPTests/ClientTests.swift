@@ -76,7 +76,7 @@ final class ClientTests: XCTestCase {
         requestLoader.nextResponse = response
 
         client.request(Request(url: URL.test)) { result in
-            assertResultError(result, .invalidRequest(error))
+            assertResultError(result, .invalidRequest(error, 403))
         }
     }
 
