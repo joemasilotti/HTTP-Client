@@ -37,20 +37,25 @@ public struct Client<T, E> where T: Decodable, E: LocalizedError & Decodable & E
     }
 
     private func handleSuccess<T, E>(_ data: Data, headers: [AnyHashable: Any]) -> ClientResult<T, E> {
-        do {
-            let value = try JSONDecoder().decode(T.self, from: data)
+        if let value: T = parse(data) {
             return .success(Response(headers: headers, value: value))
-        } catch {
+        } else {
             return .failure(.responseTypeMismatch)
         }
     }
 
     private func handleFailure<T, E>(_ data: Data, statusCode: Int) -> ClientResult<T, E> {
-        do {
-            let error = try JSONDecoder().decode(E.self, from: data)
+        if let error: E = parse(data) {
             return .failure(.invalidRequest(error))
-        } catch {
+        } else {
             return .failure(.invalidResponse(statusCode))
         }
+    }
+
+    private func parse<T: Decodable>(_ data: Data?) -> T? {
+        guard let data = data else { return nil }
+        let decoder = JSONDecoder()
+        decoder.keyDecodingStrategy = Global.keyDecodingStrategy
+        return try? decoder.decode(T.self, from: data)
     }
 }

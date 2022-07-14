@@ -84,3 +84,16 @@ let request = URLRequest(
 )
 _ = await client.request(request)
 ```
+
+## Key encoding strategies
+
+By default, all encoding and decoding of keys to JSON is done by converting to snake case.
+
+This can be changed via the global configuration.
+
+```swift
+import HTTP
+
+HTTP.Global.keyDecodingStrategy = .useDefaultKeys
+HTTP.Global.keyEncodingStrategy = .useDefaultKeys
+```

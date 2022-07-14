@@ -1,10 +1,12 @@
 import Foundation
 
 struct TestObject: Codable, Equatable {
-    let title: String
+    let property: String
+    let secondProperty: String
 
-    init(title: String = "Test Title") {
-        self.title = title
+    init(property: String = "First property", secondProperty: String = "Second property") {
+        self.property = property
+        self.secondProperty = secondProperty
     }
 }
 
