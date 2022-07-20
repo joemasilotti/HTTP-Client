@@ -1,0 +1,14 @@
+# Changelog
+
+## 2022
+
+* July 20 - Convert project to async-await - [#2](https://github.com/joemasilotti/HTTP-Client/pull/2)
+
+## 2021
+
+* April 27 - Add PATCH HTTP method
+* April 20 - Option for key encoding strategy on `BodyRequest`
+* April 20 - Add DELETE HTTP method
+* April 19 - Add status code to `.invalidResponse` error
+* April 5 - Global config for `RequestLoader` (for tests)
+* April 3 - Add header configuration to requests - [#1](Ghttps://github.com/joemasilotti/HTTP-Client/pull/1) [@andrejacobs](https://github.com/andrejacobs)

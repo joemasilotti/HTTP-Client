@@ -4,6 +4,10 @@ import PackageDescription
 
 let package = Package(
     name: "HTTP Client",
+    platforms: [
+        .macOS(.v10_15),
+        .iOS(.v14),
+    ],
     products: [
         .library(
             name: "HTTP",

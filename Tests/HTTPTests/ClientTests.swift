@@ -4,38 +4,37 @@ import XCTest
 final class ClientTests: XCTestCase {
     // MARK: request(_:completion:)
 
-    func test_request_loadsTheRequest() {
+    func test_request_loadsTheRequest() async {
         let requestLoader = FakeRequestLoader()
         let client = Client<Empty, Empty>(requestLoader: requestLoader)
 
-        client.request(Request(url: URL.test)) { _ in }
+        _ = await client.request(Request(url: URL.test))
 
         XCTAssertEqual(requestLoader.lastLoadedRequest, URLRequest.test)
     }
 
-    func test_request_withURLRequest_loadsTheRequest() {
+    func test_request_withURLRequest_loadsTheRequest() async {
         let requestLoader = FakeRequestLoader()
         let client = Client<Empty, Empty>(requestLoader: requestLoader)
 
         let expectedURLRequest = URLRequest.testWithExtraProperties
-        client.request(expectedURLRequest) { _ in }
+        _ = await client.request(expectedURLRequest)
 
         XCTAssertEqual(requestLoader.lastLoadedRequest, expectedURLRequest)
     }
 
-    func test_request_failsWithANetworkError() {
+    func test_request_failsWithANetworkError() async {
         let requestLoader = FakeRequestLoader()
         let client = Client<Empty, Empty>(requestLoader: requestLoader)
 
         let networkError = URLError(.badURL)
         requestLoader.nextError = networkError
 
-        client.request(Request(url: URL.test)) { result in
-            assertResultError(result, .failedRequest(URLError(.badURL)))
-        }
+        let result = await client.request(Request(url: URL.test))
+        assertResultError(result, .failedRequest(URLError(.badURL)))
     }
 
-    func test_request_200range_succeedsWithParsedSuccessObject() throws {
+    func test_request_200range_succeedsWithParsedSuccessObject() async throws {
         let requestLoader = FakeRequestLoader()
         let client = Client<TestObject, Empty>(requestLoader: requestLoader)
 
@@ -46,25 +45,23 @@ final class ClientTests: XCTestCase {
         let response = HTTPURLResponse(url: URL.test, statusCode: 200, httpVersion: nil, headerFields: ["HEADER": "value"])
         requestLoader.nextResponse = response
 
-        client.request(Request(url: URL.test)) { result in
-            XCTAssertEqual(try? result.get().value, exampleObject)
-            XCTAssertEqual(try? result.get().headers as? [String: String], ["HEADER": "value"])
-        }
+        let result = await client.request(Request(url: URL.test))
+        XCTAssertEqual(try? result.get().value, exampleObject)
+        XCTAssertEqual(try? result.get().headers as? [String: String], ["HEADER": "value"])
     }
 
-    func test_request_200range_failsWhenParsingFails() {
+    func test_request_200range_failsWhenParsingFails() async {
         let requestLoader = FakeRequestLoader()
         let client = Client<TestObject, Empty>(requestLoader: requestLoader)
 
         let response = HTTPURLResponse(url: URL.test, statusCode: 200, httpVersion: nil, headerFields: nil)
         requestLoader.nextResponse = response
 
-        client.request(Request(url: URL.test)) { result in
-            assertResultError(result, .responseTypeMismatch)
-        }
+        let result = await client.request(Request(url: URL.test))
+        assertResultError(result, .responseTypeMismatch)
     }
 
-    func test_request_non200range_failsWithParsedErrorObject() throws {
+    func test_request_non200range_failsWithParsedErrorObject() async throws {
         let requestLoader = FakeRequestLoader()
         let client = Client<Empty, TestError>(requestLoader: requestLoader)
 
@@ -75,31 +72,28 @@ final class ClientTests: XCTestCase {
         let response = HTTPURLResponse(url: URL.test, statusCode: 403, httpVersion: nil, headerFields: nil)
         requestLoader.nextResponse = response
 
-        client.request(Request(url: URL.test)) { result in
-            assertResultError(result, .invalidRequest(error))
-        }
+        let result = await client.request(Request(url: URL.test))
+        assertResultError(result, .invalidRequest(error))
     }
 
-    func test_request_non200range_failsWhenParsingFails() {
+    func test_request_non200range_failsWhenParsingFails() async {
         let requestLoader = FakeRequestLoader()
         let client = Client<Empty, TestError>(requestLoader: requestLoader)
 
         let response = HTTPURLResponse(url: URL.test, statusCode: 403, httpVersion: nil, headerFields: nil)
         requestLoader.nextResponse = response
 
-        client.request(Request(url: URL.test)) { result in
-            assertResultError(result, .invalidResponse(403))
-        }
+        let result = await client.request(Request(url: URL.test))
+        assertResultError(result, .invalidResponse(403))
     }
 
-    func test_request_failsWhenNotAnHTTPResponse() {
+    func test_request_failsWhenNotAnHTTPResponse() async {
         let requestLoader = FakeRequestLoader()
         let client = Client<Empty, Empty>(requestLoader: requestLoader)
 
         requestLoader.nextResponse = URLResponse()
 
-        client.request(Request(url: URL.test)) { result in
-            assertResultError(result, .failedRequest(nil))
-        }
+        let result = await client.request(Request(url: URL.test))
+        assertResultError(result, .failedRequest(nil))
     }
 }
