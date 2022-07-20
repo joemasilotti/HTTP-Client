@@ -39,7 +39,7 @@ final class ClientTests: XCTestCase {
         let client = Client<TestObject, Empty>(requestLoader: requestLoader)
 
         let exampleObject = TestObject()
-        let data = try XCTUnwrap(JSONEncoder().encode(exampleObject))
+        let data = try XCTUnwrap(JSONEncoder.convertingKeysFromSnakeCase.encode(exampleObject))
         requestLoader.nextData = data
 
         let response = HTTPURLResponse(url: URL.test, statusCode: 200, httpVersion: nil, headerFields: ["HEADER": "value"])
@@ -95,5 +95,19 @@ final class ClientTests: XCTestCase {
 
         let result = await client.request(Request(url: URL.test))
         assertResultError(result, .failedRequest(nil))
+    }
+
+    func test_request_nonSnakeCaseKeyCodingStrategy() async throws {
+        let requestLoader = FakeRequestLoader()
+        HTTP.Global.keyEncodingStrategy = .useDefaultKeys
+        HTTP.Global.keyDecodingStrategy = .useDefaultKeys
+        let client = Client<TestObject, Empty>(requestLoader: requestLoader)
+
+        let exampleObject = TestObject()
+        let data = try XCTUnwrap(JSONEncoder().encode(exampleObject))
+        requestLoader.nextData = data
+
+        let result = await client.request(Request(url: URL.test))
+        XCTAssertEqual(try? result.get().value, exampleObject)
     }
 }
