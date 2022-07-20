@@ -2,6 +2,7 @@
 
 ## 2022
 
+* July 20 - Set default key coding strategy to snake case - [#3](https://github.com/joemasilotti/HTTP-Client/pull/3)
 * July 20 - Convert project to async-await - [#2](https://github.com/joemasilotti/HTTP-Client/pull/2)
 
 ## 2021
