@@ -1,7 +1,7 @@
 import HTTP
 import XCTest
 
-final class ClientTests: XCTestCase {
+final class ClientTests: TestCase {
     // MARK: request(_:completion:)
 
     func test_request_loadsTheRequest() async {
@@ -39,7 +39,7 @@ final class ClientTests: XCTestCase {
         let client = Client<TestObject, Empty>(requestLoader: requestLoader)
 
         let exampleObject = TestObject()
-        let data = try XCTUnwrap(JSONEncoder.convertingKeysFromSnakeCase.encode(exampleObject))
+        let data = try XCTUnwrap(encoder.encode(exampleObject))
         requestLoader.nextData = data
 
         let response = HTTPURLResponse(url: URL.test, statusCode: 200, httpVersion: nil, headerFields: ["HEADER": "value"])
@@ -66,7 +66,7 @@ final class ClientTests: XCTestCase {
         let client = Client<Empty, TestError>(requestLoader: requestLoader)
 
         let error = TestError(message: "Example message.")
-        let data = try XCTUnwrap(JSONEncoder().encode(error))
+        let data = try XCTUnwrap(encoder.encode(error))
         requestLoader.nextData = data
 
         let response = HTTPURLResponse(url: URL.test, statusCode: 403, httpVersion: nil, headerFields: nil)
@@ -99,12 +99,26 @@ final class ClientTests: XCTestCase {
 
     func test_request_nonSnakeCaseKeyCodingStrategy() async throws {
         let requestLoader = FakeRequestLoader()
-        HTTP.Global.keyEncodingStrategy = .useDefaultKeys
         HTTP.Global.keyDecodingStrategy = .useDefaultKeys
+        HTTP.Global.keyEncodingStrategy = .useDefaultKeys
         let client = Client<TestObject, Empty>(requestLoader: requestLoader)
 
         let exampleObject = TestObject()
-        let data = try XCTUnwrap(JSONEncoder().encode(exampleObject))
+        let data = try XCTUnwrap(encoder.encode(exampleObject))
+        requestLoader.nextData = data
+
+        let result = await client.request(Request(url: URL.test))
+        XCTAssertEqual(try? result.get().value, exampleObject)
+    }
+
+    func test_request_dateCodingStrategy() async throws {
+        let requestLoader = FakeRequestLoader()
+        HTTP.Global.dateDecodingStrategy = .millisecondsSince1970
+        HTTP.Global.dateEncodingStrategy = .millisecondsSince1970
+        let client = Client<TestObject, Empty>(requestLoader: requestLoader)
+
+        let exampleObject = TestObject()
+        let data = try XCTUnwrap(encoder.encode(exampleObject))
         requestLoader.nextData = data
 
         let result = await client.request(Request(url: URL.test))

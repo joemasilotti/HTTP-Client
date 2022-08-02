@@ -85,7 +85,7 @@ let request = URLRequest(
 _ = await client.request(request)
 ```
 
-## Key encoding strategies
+## Key coding strategies
 
 By default, all encoding and decoding of keys to JSON is done by converting to snake case.
 
@@ -96,4 +96,19 @@ import HTTP
 
 HTTP.Global.keyDecodingStrategy = .useDefaultKeys
 HTTP.Global.keyEncodingStrategy = .useDefaultKeys
+```
+
+## Date coding strategies
+
+By default, all encoding and decoding of date keys to JSON assumes the [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) format.
+
+> Ruby on Rails tip: Call `date.iso8601` to format the date properly.
+
+This can be changed via the global configuration.
+
+```swift
+import HTTP
+
+HTTP.Global.dateDecodingStrategy = .millisecondsSince1970
+HTTP.Global.dateEncodingStrategy = .millisecondsSince1970
 ```

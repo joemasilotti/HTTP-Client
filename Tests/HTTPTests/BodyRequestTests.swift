@@ -1,11 +1,7 @@
 @testable import HTTP
 import XCTest
 
-class BodyRequestTests: XCTestCase {
-    override func tearDown() {
-        Global.resetToDefaults()
-    }
-
+class BodyRequestTests: TestCase {
     // MARK: asURLRequest
 
     func test_asURLRequest_encodesItsBody() throws {
@@ -13,7 +9,7 @@ class BodyRequestTests: XCTestCase {
         let urlRequest = request.asURLRequest
 
         let data = try XCTUnwrap(urlRequest.httpBody)
-        let object = try? JSONDecoder.convertingKeysFromSnakeCase.decode(TestObject.self, from: data)
+        let object = try? decoder.decode(TestObject.self, from: data)
         XCTAssertEqual(object, TestObject())
     }
 

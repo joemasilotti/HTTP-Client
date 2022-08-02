@@ -55,6 +55,7 @@ public struct Client<T, E> where T: Decodable, E: LocalizedError & Decodable & E
     private func parse<T: Decodable>(_ data: Data?) -> T? {
         guard let data = data else { return nil }
         let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = Global.dateDecodingStrategy
         decoder.keyDecodingStrategy = Global.keyDecodingStrategy
         return try? decoder.decode(T.self, from: data)
     }

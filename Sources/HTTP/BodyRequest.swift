@@ -10,6 +10,7 @@ public class BodyRequest<T: Encodable>: Request {
 
     override func addToRequest(_ request: inout URLRequest) {
         let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = Global.dateEncodingStrategy
         encoder.keyEncodingStrategy = Global.keyEncodingStrategy
         request.httpBody = try? encoder.encode(body)
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")

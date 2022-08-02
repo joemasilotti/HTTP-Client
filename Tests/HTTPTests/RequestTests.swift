@@ -1,7 +1,7 @@
 @testable import HTTP
 import XCTest
 
-class RequestTests: XCTestCase {
+class RequestTests: TestCase {
     // MARK: asURLRequest
 
     func test_asURLRequest_setsTheURL() {

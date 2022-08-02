@@ -1,15 +1,7 @@
 @testable import HTTP
 import XCTest
 
-class GlobalTests: XCTestCase {
-    override class func setUp() {
-        Global.resetToDefaults()
-    }
-
-    override class func tearDown() {
-        Global.resetToDefaults()
-    }
-
+class GlobalTests: TestCase {
     func test_requestLoader_defaultsToTheSharedURLSession() {
         XCTAssert(Global.requestLoader as? URLSession === URLSession.shared)
     }
