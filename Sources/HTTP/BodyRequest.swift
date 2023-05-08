@@ -12,6 +12,7 @@ public class BodyRequest<T: Encodable>: Request {
         let encoder = JSONEncoder()
         encoder.keyEncodingStrategy = Global.keyEncodingStrategy
         request.httpBody = try? encoder.encode(body)
+        request.setValue("application/json", forHTTPHeaderField: "Accept")
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
     }
 

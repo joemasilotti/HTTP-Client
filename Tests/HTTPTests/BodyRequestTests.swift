@@ -17,9 +17,10 @@ class BodyRequestTests: XCTestCase {
         XCTAssertEqual(object, TestObject())
     }
 
-    func test_init_setsJSONAsTheContentTypeHeader() {
+    func test_init_identifiesAsAJSONRequestToRails() {
         let request = BodyRequest(url: URL.test, body: TestObject())
         let urlRequest = request.asURLRequest
+        XCTAssertEqual(urlRequest.value(forHTTPHeaderField: "Accept"), "application/json")
         XCTAssertEqual(urlRequest.value(forHTTPHeaderField: "Content-Type"), "application/json")
     }
 

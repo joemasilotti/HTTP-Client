@@ -8,10 +8,12 @@ public struct Client<T, E> where T: Decodable, E: LocalizedError & Decodable & E
         self.requestLoader = requestLoader
     }
 
+    @MainActor
     public func request(_ request: Request) async -> ClientResult<T, E> {
         await self.request(request.asURLRequest)
     }
 
+    @MainActor
     public func request(_ request: URLRequest) async -> ClientResult<T, E> {
         do {
             let (data, response) = try await requestLoader.load(request)
