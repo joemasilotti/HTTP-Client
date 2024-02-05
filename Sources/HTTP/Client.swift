@@ -48,7 +48,7 @@ public struct Client<T, E> where T: Decodable, E: LocalizedError & Decodable & E
 
     private func handleFailure<T, E>(_ data: Data, statusCode: Int) -> ClientResult<T, E> {
         if let error: E = parse(data) {
-            return .failure(.invalidRequest(error))
+            return .failure(.invalidRequest(error, statusCode))
         } else {
             return .failure(.invalidResponse(statusCode))
         }

@@ -73,7 +73,7 @@ final class ClientTests: XCTestCase {
         requestLoader.nextResponse = response
 
         let result = await client.request(Request(url: URL.test))
-        assertResultError(result, .invalidRequest(error))
+        assertResultError(result, .invalidRequest(error, 403))
     }
 
     func test_request_non200range_failsWhenParsingFails() async {

@@ -2,7 +2,7 @@ import Foundation
 
 public enum HTTPError<T: LocalizedError>: LocalizedError {
     case failedRequest(URLError?)
-    case invalidRequest(T)
+    case invalidRequest(T, Int)
     case invalidResponse(Int)
     case responseTypeMismatch
 
@@ -10,7 +10,7 @@ public enum HTTPError<T: LocalizedError>: LocalizedError {
         switch self {
             case .failedRequest:
                 return "The request failed."
-            case let .invalidRequest(error):
+            case let .invalidRequest(error, _):
                 return error.localizedDescription
             case let .invalidResponse(statusCode):
                 return "The response was invalid (\(statusCode))."
@@ -23,7 +23,7 @@ public enum HTTPError<T: LocalizedError>: LocalizedError {
         switch self {
             case let .failedRequest(error):
                 return error?.localizedDescription
-            case let .invalidRequest(error):
+            case let .invalidRequest(error, _):
                 return error.localizedDescription
             case let .invalidResponse(statusCode):
                 return "The server returned a \(statusCode) status code."
