@@ -27,7 +27,7 @@ public struct Client<T, E> where T: Decodable, E: LocalizedError & Decodable & E
 
     private let requestLoader: RequestLoader
 
-    private func handleResponse<T>(_ response: URLResponse, with data: Data) -> ClientResult<T, E> {
+    private func handleResponse(_ response: URLResponse, with data: Data) -> ClientResult<T, E> {
         guard let response = response as? HTTPURLResponse
         else { return .failure(.failedRequest(nil)) }
 
@@ -38,7 +38,7 @@ public struct Client<T, E> where T: Decodable, E: LocalizedError & Decodable & E
         }
     }
 
-    private func handleSuccess<T, E>(_ data: Data, headers: [AnyHashable: Any]) -> ClientResult<T, E> {
+    private func handleSuccess(_ data: Data, headers: [AnyHashable: Any]) -> ClientResult<T, E> {
         if let value: T = parse(data) {
             return .success(Response(headers: headers, value: value))
         } else {
@@ -46,7 +46,7 @@ public struct Client<T, E> where T: Decodable, E: LocalizedError & Decodable & E
         }
     }
 
-    private func handleFailure<T, E>(_ data: Data, statusCode: Int) -> ClientResult<T, E> {
+    private func handleFailure(_ data: Data, statusCode: Int) -> ClientResult<T, E> {
         if let error: E = parse(data) {
             return .failure(.invalidRequest(error, statusCode))
         } else {
@@ -54,10 +54,10 @@ public struct Client<T, E> where T: Decodable, E: LocalizedError & Decodable & E
         }
     }
 
-    private func parse<T: Decodable>(_ data: Data?) -> T? {
+    private func parse<D: Decodable>(_ data: Data?) -> D? {
         guard let data = data else { return nil }
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = Global.keyDecodingStrategy
-        return try? decoder.decode(T.self, from: data)
+        return try? decoder.decode(D.self, from: data)
     }
 }
