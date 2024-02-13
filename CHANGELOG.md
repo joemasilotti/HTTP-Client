@@ -2,6 +2,7 @@
 
 ## 2024
 
+* February 13 - Option to set a user agent for all request - [#5](https://github.com/joemasilotti/HTTP-Client/pull/5)
 * February 13 - Expose status code when possible - [#4](https://github.com/joemasilotti/HTTP-Client/pull/4)
 
 ## 2022
