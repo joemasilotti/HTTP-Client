@@ -28,4 +28,12 @@ class RequestTests: XCTestCase {
         let requestWithHeaders = Request(url: URL.test, headers: headers)
         XCTAssertEqual(requestWithHeaders.asURLRequest.allHTTPHeaderFields, headers)
     }
+
+    func test_init_setsGlobalUserAgent() throws {
+        Global.userAgent = "Custom User Agent"
+        let request = Request(url: URL.test)
+
+        let urlRequest = request.asURLRequest
+        XCTAssertEqual(urlRequest.value(forHTTPHeaderField: "User-Agent"), "Custom User Agent")
+    }
 }

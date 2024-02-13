@@ -52,6 +52,14 @@ class BodyRequestTests: XCTestCase {
         XCTAssertEqual(json["secondProperty"], "value")
     }
 
+    func test_init_setsGlobalUserAgent() throws {
+        Global.userAgent = "Custom User Agent"
+        let request = BodyRequest(url: URL.test, body: TestObject())
+
+        let urlRequest = request.asURLRequest
+        XCTAssertEqual(urlRequest.value(forHTTPHeaderField: "User-Agent"), "Custom User Agent")
+    }
+
     private func decodeRequest(_ request: Request) throws -> [String: String] {
         let urlRequest = request.asURLRequest
         let data = try XCTUnwrap(urlRequest.httpBody)

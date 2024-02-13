@@ -6,7 +6,12 @@ public class Request {
     public init(url: URL, method: Method = .get, headers: Headers = [:]) {
         self.url = url
         self.method = method
-        self.headers = headers
+
+        if let userAgent = Global.userAgent {
+            self.headers = headers.merging(["User-Agent": userAgent]) { _, new in new }
+        } else {
+            self.headers = headers
+        }
     }
 
     // MARK: Internal

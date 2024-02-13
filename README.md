@@ -108,6 +108,16 @@ let request = URLRequest(
 _ = await client.request(request)
 ```
 
+### User agent
+
+A user agent can also be set for all requests, assigning the `"User-Agent"` header.
+
+```swift
+import HTTP
+
+HTTP.Global.userAgent = "Custom User Agent"
+```
+
 ### Key encoding strategies
 
 By default, all encoding and decoding of keys to JSON is done by converting to snake case.
