@@ -12,7 +12,7 @@ Add HTTP Client as a dependency through Xcode or directly to Package.swift:
 
 ## Usage
 
-GET request with no expected success or error response object types.
+### GET request with empty responses
 
 ```swift
 import HTTP
@@ -25,7 +25,9 @@ case .failure(let error): print(error.localizedDescription)
 }
 ```
 
-POST request with HTTP body and expected success and failure response objects. Failure response objects are parsed with response codes outside the 200 range.
+### POST request with success and response objects
+
+Failure response objects are parsed when the response code is outside of the 200 range.
 
 ```swift
 import HTTP
@@ -60,6 +62,25 @@ case .failure(let error):
 }
 ```
 
+### Status code
+
+When possible, a status code is also exposed.
+
+```swift
+import HTTP
+
+let client = Client<Empty, Empty>()
+let request = Request(url: url)
+switch await client.request(request) {
+case .success(let statusCode):
+    print("Status code", statusCode)
+case .failure(let error):
+    print("Status code", error.statusCode ?? "(none)")
+}
+```
+
+### HTTP headers
+
 HTTP headers can also be set on `Request`.
 
 ```swift
@@ -70,6 +91,8 @@ let headers = ["Cookie": "tasty_cookie=strawberry"]
 let request = Request(url: url, headers: headers)
 _ = await client.request(request)
 ```
+
+### Custom `URLRequest`
 
 `URLRequest` can be used directly if you require more fine grained control.
 
@@ -85,7 +108,7 @@ let request = URLRequest(
 _ = await client.request(request)
 ```
 
-## Key encoding strategies
+### Key encoding strategies
 
 By default, all encoding and decoding of keys to JSON is done by converting to snake case.
 

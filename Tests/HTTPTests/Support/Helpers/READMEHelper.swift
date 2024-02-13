@@ -46,6 +46,19 @@ struct POSTRequestExample {
     }
 }
 
+struct StatusCodeExmaple {
+    func example() async {
+        let client = Client<Empty, Empty>()
+        let request = Request(url: url)
+        switch await client.request(request) {
+        case .success(let statusCode):
+            print("Status code", statusCode)
+        case .failure(let error):
+            print("Status code", error.statusCode ?? "(none)")
+        }
+    }
+}
+
 struct RequestWithHeadersExample {
     func example() async {
         let client = Client<Empty, Empty>()

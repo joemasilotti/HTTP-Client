@@ -27,37 +27,37 @@ public struct Client<T, E> where T: Decodable, E: LocalizedError & Decodable & E
 
     private let requestLoader: RequestLoader
 
-    private func handleResponse<T>(_ response: URLResponse, with data: Data) -> ClientResult<T, E> {
+    private func handleResponse(_ response: URLResponse, with data: Data) -> ClientResult<T, E> {
         guard let response = response as? HTTPURLResponse
         else { return .failure(.failedRequest(nil)) }
 
         if (200 ..< 300).contains(response.statusCode) {
-            return handleSuccess(data, headers: response.allHeaderFields)
+            return handleSuccess(data, headers: response.allHeaderFields, statusCode: response.statusCode)
         } else {
             return handleFailure(data, statusCode: response.statusCode)
         }
     }
 
-    private func handleSuccess<T, E>(_ data: Data, headers: [AnyHashable: Any]) -> ClientResult<T, E> {
+    private func handleSuccess(_ data: Data, headers: [AnyHashable: Any], statusCode: Int) -> ClientResult<T, E> {
         if let value: T = parse(data) {
-            return .success(Response(headers: headers, value: value))
+            return .success(Response(headers: headers, value: value, statusCode: statusCode))
         } else {
-            return .failure(.responseTypeMismatch)
+            return .failure(.responseTypeMismatch(statusCode))
         }
     }
 
-    private func handleFailure<T, E>(_ data: Data, statusCode: Int) -> ClientResult<T, E> {
+    private func handleFailure(_ data: Data, statusCode: Int) -> ClientResult<T, E> {
         if let error: E = parse(data) {
-            return .failure(.invalidRequest(error))
+            return .failure(.invalidRequest(error, statusCode))
         } else {
             return .failure(.invalidResponse(statusCode))
         }
     }
 
-    private func parse<T: Decodable>(_ data: Data?) -> T? {
+    private func parse<D: Decodable>(_ data: Data?) -> D? {
         guard let data = data else { return nil }
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = Global.keyDecodingStrategy
-        return try? decoder.decode(T.self, from: data)
+        return try? decoder.decode(D.self, from: data)
     }
 }

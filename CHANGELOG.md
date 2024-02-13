@@ -1,5 +1,9 @@
 # Changelog
 
+## 2024
+
+* February 13 - Expose status code when possible - [#4](https://github.com/joemasilotti/HTTP-Client/pull/4)
+
 ## 2022
 
 * November 18 - Fix exception when running on iOS 14.4
