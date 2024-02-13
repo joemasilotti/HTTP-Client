@@ -32,17 +32,17 @@ public struct Client<T, E> where T: Decodable, E: LocalizedError & Decodable & E
         else { return .failure(.failedRequest(nil)) }
 
         if (200 ..< 300).contains(response.statusCode) {
-            return handleSuccess(data, headers: response.allHeaderFields)
+            return handleSuccess(data, headers: response.allHeaderFields, statusCode: response.statusCode)
         } else {
             return handleFailure(data, statusCode: response.statusCode)
         }
     }
 
-    private func handleSuccess(_ data: Data, headers: [AnyHashable: Any]) -> ClientResult<T, E> {
+    private func handleSuccess(_ data: Data, headers: [AnyHashable: Any], statusCode: Int) -> ClientResult<T, E> {
         if let value: T = parse(data) {
-            return .success(Response(headers: headers, value: value))
+            return .success(Response(headers: headers, value: value, statusCode: statusCode))
         } else {
-            return .failure(.responseTypeMismatch)
+            return .failure(.responseTypeMismatch(statusCode))
         }
     }
 

@@ -48,6 +48,7 @@ final class ClientTests: XCTestCase {
         let result = await client.request(Request(url: URL.test))
         XCTAssertEqual(try? result.get().value, exampleObject)
         XCTAssertEqual(try? result.get().headers as? [String: String], ["HEADER": "value"])
+        XCTAssertEqual(try? result.get().statusCode, 200)
     }
 
     func test_request_200range_failsWhenParsingFails() async {
@@ -58,7 +59,7 @@ final class ClientTests: XCTestCase {
         requestLoader.nextResponse = response
 
         let result = await client.request(Request(url: URL.test))
-        assertResultError(result, .responseTypeMismatch)
+        assertResultError(result, .responseTypeMismatch(200))
     }
 
     func test_request_non200range_failsWithParsedErrorObject() async throws {
