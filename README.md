@@ -7,7 +7,7 @@ A barebones async-await Swift HTTP client with automatic JSON response parsing.
 Add HTTP Client as a dependency through Xcode or directly to Package.swift:
 
 ```
-.package(url: "https://github.com/joemasilotti/HTTP-Client", branch: "main")
+.package(url: "https://github.com/joemasilotti/HTTP-Client", .upToNextMinor(from: "0.1"))
 ```
 
 ## Usage
